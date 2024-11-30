@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from refinery.units.crypto.hash import HashUnit, Arg
+#from refinery.units.crypto.hash import HashUnit, Arg
 
 '''
 Python impl for the Fowler–Noll–Vo hash function
@@ -10,22 +10,27 @@ https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
 http://isthe.com/chongo/tech/comp/fnv/
 '''
 
-FNV_PRIME_32 = 0x01000193
-FNV_PRIME_64 = 0x100000001b3
-
-FNV_OFFSET_BASIS_32 = 0x811c9dc5
+FNV_PRIME_32 = 16777619
+FNV_OFFSET_BASIS_32 = 2166136261
 FNVA_OFFSET_BASIS_32 = FNV_OFFSET_BASIS_32
-FNV_OFFSET_BASIS_64 = 0xcbf29ce484222325
+
+FNV_PRIME_64 = 1099511628211
+FNV_OFFSET_BASIS_64 = 14695981039346656037
 FNVA_OFFSET_BASIS_64 = FNV_OFFSET_BASIS_64
 
-class fnv(HashUnit):
+class fnv():
 
-    def _algorithm(data, fnv_prime, fnv_offset_basis, size):
+    def _algorithm(self, data, fnv_prime, fnv_offset_basis, size):
         hash = fnv_offset_basis
 
+        if isinstance(data, str):
+            data = data.encode('utf-8')
+
+        assert isinstance(data, bytes)
+
         for byte in data:
-            hash = (hash * fnv_prime) % size
-            hash = hash ^ ord(byte)
+            hash = (hash * fnv_prime) % (2**size)
+            hash = hash ^ byte
 
         return hash
     
@@ -35,17 +40,22 @@ class fnv(HashUnit):
     def fnv64(self, data):
         return self._algorithm(data, FNV_PRIME_64, FNV_OFFSET_BASIS_64, 64)
 
-class fnva(HashUnit):
+class fnva():
 
-    def _algorithm(data, fnv_prime, fnv_offset_basis, size):
+    def _algorithm(self, data, fnv_prime, fnv_offset_basis, size):
         hash = fnv_offset_basis
+
+        if isinstance(data, str):
+            data = data.encode('utf-8')
+
+        assert isinstance(data, bytes)
 
         for byte in data:
             '''
             The "A" variant inverts the  order of operations. This ivnersions leads to *slightly* better avalanche effects.
             '''
-            hash = hash ^ ord(byte)
-            hash = (hash * fnv_prime) % size
+            hash = hash ^ byte
+            hash = (hash * fnv_prime) % (2**size)
 
         return hash
     
@@ -54,6 +64,4 @@ class fnva(HashUnit):
     
     def fnva64(self, data):
         return self._algorithm(data, FNV_PRIME_64, FNVA_OFFSET_BASIS_64, 64)
-
-
-fnv = fnv()
+    
