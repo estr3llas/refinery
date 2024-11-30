@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#from refinery.units.crypto.hash import HashUnit, Arg
+from refinery.units.crypto.hash import HashUnit, Arg
 
 '''
 Python impl for the Fowler–Noll–Vo hash function
@@ -18,7 +18,8 @@ FNV_PRIME_64 = 1099511628211
 FNV_OFFSET_BASIS_64 = 14695981039346656037
 FNVA_OFFSET_BASIS_64 = FNV_OFFSET_BASIS_64
 
-class fnv():
+
+class fnv(HashUnit):
 
     def _algorithm(self, data, fnv_prime, fnv_offset_basis, size):
         hash = fnv_offset_basis
@@ -40,7 +41,8 @@ class fnv():
     def fnv64(self, data):
         return self._algorithm(data, FNV_PRIME_64, FNV_OFFSET_BASIS_64, 64)
 
-class fnva():
+
+class fnva(HashUnit):
 
     def _algorithm(self, data, fnv_prime, fnv_offset_basis, size):
         hash = fnv_offset_basis
