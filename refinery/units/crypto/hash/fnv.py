@@ -21,6 +21,10 @@ FNVA_OFFSET_BASIS_64 = FNV_OFFSET_BASIS_64
 
 class fnv(HashUnit):
 
+    def __init__(self, size: Arg.Number('The size (32 or 64)'), text=False):
+        super().__init__(size=size, text=text)
+
+
     def _algorithm(self, data, fnv_prime, fnv_offset_basis, size):
         hash = fnv_offset_basis
 
@@ -43,6 +47,9 @@ class fnv(HashUnit):
 
 
 class fnva(HashUnit):
+
+    def __init__(self, size: Arg.Number('The size (32 or 64)'), text=False):
+        super().__init__(size=size, text=text)
 
     def _algorithm(self, data, fnv_prime, fnv_offset_basis, size):
         hash = fnv_offset_basis
